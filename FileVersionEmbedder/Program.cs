@@ -11,18 +11,19 @@ namespace FileVersionEmbedder
     class Program
     {
         static string fileName = "Index.html";
+        static StreamWriter logFile;
 
         static void Main(string[] args)
         {
-            
+            logFile = File.CreateText("log.txt");
+               
             if (args.Length > 0)
             {
-                fileName = args.First();
+                fileName = args.First().TrimStart('-');
             }
             if (!File.Exists(fileName))
             {
-                Console.WriteLine("ERROR! Can't get access to file " + fileName + "!");
-                Console.ReadKey();
+                logFile.WriteLine("ERROR! Can't get access to file " + fileName + "!");
                 return;
             }
 
@@ -46,8 +47,11 @@ namespace FileVersionEmbedder
             }
             catch (Exception ex)
             {
-                Console.WriteLine("ERROR! " + ex.Message);
-                Console.ReadKey();
+                logFile.WriteLine("ERROR! " + ex.Message);
+            }
+            finally
+            {
+                logFile.Close();
             }
         }
 
@@ -60,6 +64,10 @@ namespace FileVersionEmbedder
                 DateTime fileModifiedDate = File.GetLastWriteTime(filePath);
                 newSrcValue = src.Value.SetUrlParameter("version", fileModifiedDate.ToFileTime().ToString());
             }
+            else
+            {
+                logFile.WriteLine("File " + filePath + " not found!");
+            }
             return newSrcValue;
         }
 
@@ -69,7 +77,7 @@ namespace FileVersionEmbedder
             var filenamePos = fileName.LastIndexOf('\\');
             if (filenamePos != -1)
             {
-                directory = fileName.Remove(filenamePos - 1);
+                directory = fileName.Remove(filenamePos);
             }
 
             var qPos = urlPath.IndexOf('?');
