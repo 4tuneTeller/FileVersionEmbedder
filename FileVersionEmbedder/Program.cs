@@ -56,17 +56,7 @@ namespace FileVersionEmbedder
             if (!src.Value.StartsWith("http") && File.Exists(filePath))
             {
                 DateTime fileModifiedDate = File.GetLastWriteTime(filePath);
-                int versionPos = src.Value.IndexOf("?version=", StringComparison.Ordinal);
-                if (versionPos < 1)
-                {
-                    newSrcValue += "?version=" + fileModifiedDate.ToFileTime();
-                }
-                else
-                {
-                    var versionTruePos = versionPos + "?version=".Length;
-                    newSrcValue = src.Value.Remove(versionTruePos) + fileModifiedDate.ToFileTime();
-                }
-                //Console.WriteLine("\t" + src.Value);
+                newSrcValue = src.Value.SetUrlParameter("version", fileModifiedDate.ToFileTime().ToString());
             }
             return newSrcValue;
         }
