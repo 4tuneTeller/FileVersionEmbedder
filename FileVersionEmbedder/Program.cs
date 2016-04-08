@@ -10,9 +10,11 @@ namespace FileVersionEmbedder
 {
     class Program
     {
+        static string fileName = "Index.html";
+
         static void Main(string[] args)
         {
-            var fileName = "Index.html";
+            
             if (args.Length > 0)
             {
                 fileName = args.First();
@@ -63,13 +65,20 @@ namespace FileVersionEmbedder
 
         static string makeFilePath(string urlPath)
         {
+            string directory = Directory.GetCurrentDirectory();
+            var filenamePos = fileName.LastIndexOf('\\');
+            if (filenamePos != -1)
+            {
+                directory = fileName.Remove(filenamePos - 1);
+            }
+
             var qPos = urlPath.IndexOf('?');
             if (qPos > 0)
             {
                 urlPath = urlPath.Remove(qPos);
             }
             string path = urlPath.Replace('/', '\\');
-            return Directory.GetCurrentDirectory() + "\\" + path;
+            return directory + "\\" + path;
         }
     }
 }
