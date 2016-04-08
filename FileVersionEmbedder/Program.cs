@@ -21,6 +21,7 @@ namespace FileVersionEmbedder
             {
                 Console.WriteLine("ERROR! Can't get access to file " + fileName + "!");
                 Console.ReadKey();
+                return;
             }
 
             try
